@@ -9,7 +9,8 @@
   "scripts": {
     "dev": "tsx ./src/index.ts",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "docs:start": "cd docs-site && pnpm run start"
   },
   "keywords": [],
   "author": "Jean Pierre Ludena",
