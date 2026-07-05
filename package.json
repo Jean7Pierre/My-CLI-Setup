@@ -32,5 +32,8 @@
     "tsx": "4.23.0",
     "typescript": "6.0.3",
     "typescript-eslint": "8.62.1"
+  },
+  "dependencies": {
+    "@inquirer/prompts": "8.5.2"
   }
 }
