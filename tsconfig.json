@@ -1,0 +1,53 @@
+{
+  // Visit https://aka.ms/tsconfig to read more about this file
+  "compilerOptions": {
+    // File Layout
+    "rootDir": "./src",
+    "outDir": "./dist",
+
+    // Environment Settings
+    // See also https://aka.ms/tsconfig/module
+    "module": "nodenext",
+    "target": "esnext",
+    // For nodejs:
+    "lib": ["esnext"],
+    "types": ["node"],
+    // and npm install -D @types/node
+
+    // Other Outputs
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+
+    // Stricter Typechecking Options
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    // 3. Te obliga a validar si un valor es 'undefined' antes de usarlo
+    "strictNullChecks": true,
+    // 4. Garantiza que todas las ramas de un 'if/else' o 'switch' retornen un valor
+    "noImplicitReturns": true,
+    // 5. Reporta error si un 'case' de un switch no tiene 'break' o 'return' y se pasa al siguiente
+    "noFallthroughCasesInSwitch": true,
+
+    // Style Options
+    // "noImplicitReturns": true,
+    // "noImplicitOverride": true,
+    // evita variables que declaras pero olvidas usar
+    "noUnusedLocals": true,
+    // 2. Evita parámetros de funciones que no utilizas
+    "noUnusedParameters": true,
+    // "noFallthroughCasesInSwitch": true,
+    // "noPropertyAccessFromIndexSignature": true,
+
+    // Recommended Options
+    "strict": true,
+    //"jsx": "react-jsx",
+    "verbatimModuleSyntax": true,
+    "isolatedModules": true,
+    "noUncheckedSideEffectImports": true,
+    "moduleDetection": "force",
+    "skipLibCheck": true,
+    "noImplicitAny": true,
+    "noEmitOnError": true
+  }
+}

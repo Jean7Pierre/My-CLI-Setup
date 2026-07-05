@@ -1,0 +1,35 @@
+# Carpetas de dependencias y compilación (Vite)
+node_modules
+dist
+build
+
+# Ignore artifacts:
+build
+coverage
+
+# Archivos de bloqueo de paquetes (pnpm)
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# Archivos de variables de entorno (por seguridad y formato)
+.env
+.env.*
+
+# Logs y archivos temporales de errores
+*.log
+.eslintcache
+
+# Archivos multimedia y binarios (Prettier no puede ni debe procesarlos)
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.ico
+*.mp4
+*.pdf
+*.woff
+*.woff2
+*.eot
+*.ttf
