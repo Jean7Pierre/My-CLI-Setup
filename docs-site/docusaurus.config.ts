@@ -11,7 +11,7 @@ const config: Config = {
   markdown: {
     mermaid: true // Habilita Mermaid en Markdown
   },
-  //themes: ['@docusaurus/theme-mermaid'], // Añade el tema
+  themes: ['@docusaurus/theme-mermaid'], // Añade el tema
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
   future: {
