@@ -11,8 +11,6 @@ async function main() {
   console.log('🚀 ¡Bienvenido a tu Generador Frontend! 🚀')
   console.log('=========================================\n')
 
-  // 1. Fase de Interactividad: Hacemos una pregunta al usuario
-  // Esto pausa la ejecución hasta que el usuario responda y presione Enter.
   const projectName = await input({
     message: '¿Cómo se llamará tu nuevo proyecto?',
     default: 'mi-app-genial'
@@ -22,7 +20,10 @@ async function main() {
 
   // 2. Implementación del Patrón Observer
   const runner = new TaskRunner() // Creamos el Sujeto
-  new CLILogger(runner) // Creamos el Observador y lo conectamos al Sujeto
+  const cliLogger = new CLILogger() // Creamos el Observador
+
+  // Conectamos el observador
+  cliLogger.attach(runner)
 
   // 3. Ejecutamos las tareas.
   // Nota cómo aquí solo llamamos a la lógica, no escribimos console.log().
@@ -33,6 +34,7 @@ async function main() {
   await runner.executeTask('Configuración de TailwindCSS')
 
   console.log(`\n🎉 ¡Proyecto "${projectName}" creado con éxito!`)
+  cliLogger.detach(runner)
 }
 
 // Como ahora usamos await, la función principal debe ser manejada

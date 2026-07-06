@@ -4,7 +4,6 @@
  */
 import { EventEmitter } from 'node:events'
 
-// 1. Defines estrictamente qué eventos existen y qué parámetros reciben
 interface TaskEvents {
   start: [message: string]
   success: [message: string]
@@ -21,11 +20,8 @@ export class TaskRunner extends EventEmitter<TaskEvents> {
    * @param taskName - El nombre de la tarea a ejecutar (ej. "Configurando Tailwind")
    */
   public async executeTask(taskName: string): Promise<void> {
-    // 1. Emitimos el evento de que hemos comenzado
     this.emit('start', `Iniciando: ${taskName}...`)
 
-    // Simulamos un retraso (como si estuviera descargando o creando archivos)
-    // En el futuro, aquí irá el código real de creación de archivos.
     return new Promise((resolve) => {
       setTimeout(() => {
         // 2. Emitimos el evento de éxito
@@ -42,19 +38,27 @@ export class TaskRunner extends EventEmitter<TaskEvents> {
  * No sabe nada de crear archivos, solo sabe cómo mostrar texto.
  */
 export class CLILogger {
-  /**
-   * @param subject - El TaskRunner al que nos vamos a suscribir
-   */
-  constructor(subject: TaskRunner) {
-    // Nos suscribimos al evento 'start'
-    subject.on('start', (message) => {
-      console.log(`⏳ ${message}`)
-    })
+  // Guardamos las referencias a las funciones para poder desuscribir después
+  private onStart = (message: string) => console.log(`⏳ ${message}`)
+  private onSuccess = (message: string) => {
+    console.log(`✅ ${message}`)
+    console.log('----------------')
+  }
 
-    // Nos suscribimos al evento 'success'
-    subject.on('success', (message) => {
-      console.log(`✅ ${message}`)
-      console.log('----------------')
-    })
+  /**
+   * Método explícito de Suscripción (Attach)
+   */
+  public attach(subject: TaskRunner) {
+    subject.on('start', this.onStart)
+    subject.on('success', this.onSuccess)
+  }
+
+  /**
+   * Método explícito de Desuscripción (Detach)
+   * 👈 Esencial para liberar memoria
+   */
+  public detach(subject: TaskRunner) {
+    subject.off('start', this.onStart)
+    subject.off('start', this.onSuccess)
   }
 }

@@ -10,6 +10,35 @@ sidebar_position: 3
 
 ¿Por qué lo usamos aquí? Porque separar la lógica es vital en Ingeniería de Software. La parte de tu código que crea los archivos (el Sujeto) no debería preocuparse por dibujar textos de colores o animaciones de carga en la terminal. Solo debe "gritar": "¡Empecé a crear Vite!". Y el Observador (nuestro logger/spinner) escuchará eso y se encargará de mostrar el mensaje bonito en pantalla. Esto nos da un código limpio y desacoplado.
 
+### ¿Qué problema resuelve Observer?
+
+Imagina que tienes una estación de radio.
+
+La estación transmite noticias.
+
+Puede haber:
+
+0 radios escuchando.
+5 radios escuchando.
+1 millón de radios escuchando.
+
+A la estación no le importa.
+
+Ella simplemente transmite.
+
+No necesita saber:
+
+cuántas radios existen?
+dónde están?
+quién las fabricó?
+qué hacen con la información?
+
+Simplemente dice:
+
+"Acabo de transmitir una noticia."
+
+Eso es exactamente Observer.
+
 ### Código
 
 ```typescript
