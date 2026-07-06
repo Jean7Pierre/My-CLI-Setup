@@ -1,0 +1,45 @@
+---
+sidebar_position: 4
+---
+
+# Conceptos
+
+## EventEmitter
+
+**EventEmitter** es una clase nativa de Node.js que implementa el patrón de diseño Observer (o publicación/suscripción). 
+Es el motor que permite la comunicación asíncrona guiada por eventos dentro del entorno de Node.js.
+En términos sencillos: **es un intermediario o "megáfono"**. Permite que una parte de tu código grite (emita) un aviso cuando pasa algo importante, y que otras partes del código que están escuchando reaccionen a ese aviso al instante.
+
+### ¿Para qué se usa?
+
+Se utiliza principalmente para construir arquitecturas desacopladas y asíncronas. 
+**Su objetivo** es separar la lógica que realiza una acción de la lógica que reacciona a esa acción.Aquí tienes los tres casos de uso principales:
+
+1. **Separar responsabilidades (Desacoplamiento)**:
+Como en tu proyecto CLI, TaskRunner solo se encarga de crear archivos. No sabe ni le importa si el feedback se va a mostrar con emojis bonitos en la consola, si se va a guardar en un archivo de texto, o si enviará un correo. TaskRunner solo "emite" el evento, y los observadores como CliLogger deciden qué hacer con esa información.
+
+2. **Manejo de flujos asíncronos continuos**:
+A diferencia de las Promesas (Promises), que solo se ejecutan una vez (se resuelven o se rechazan y terminan), un EventEmitter puede emitir el mismo evento muchas veces a lo largo del tiempo. 
+Es ideal para:
+- Saber el progreso de la descarga de un archivo (emite progress cada vez que baja un megabyte).
+- Detectar cuando un usuario escribe en la terminal.
+
+3. **La base del ecosistema de Node.js**:
+Casi todo el núcleo de Node.js está construido sobre EventEmitter. Por ejemplo:
+- Servidores HTTP: Emiten el evento 'request' cada vez que un navegador web intenta entrar a tu página.
+- Lectura de archivos (Streams): Emiten el evento 'data' cada vez que leen un fragmento de un archivo pesado, y 'end' cuando terminan.
+
+### 📋 Métodos Clave de EventEmitter
+
+El motor de eventos de Node.js se basa principalmente en cuatro operaciones fundamentales para gestionar la comunicación asíncrona entre tus componentes:
+
+| Método | Función Principal | Analogía de la Vida Real |
+| :--- | :--- | :--- |
+| **`.emit(evento, ...datos)`** | **Publica o dispara** un evento específico de forma inmediata, enviando datos opcionales a todos los que estén escuchando. | El director de una carrera de autos baja la bandera y grita por el megáfono: *¡Arrancan!* |
+| **`.on(evento, callback)`** | **Se suscribe** a un evento para escucharlo de forma permanente. Ejecuta la función interna *cada vez* que el evento ocurra. | Te suscribes a una revista mensual; te llega un ejemplar nuevo a tu casa cada vez que se publica. |
+| **`.once(evento, callback)`** | **Escucha una sola vez**. Reacciona al evento la primera vez que se dispara y automáticamente se desvincula para siempre. | Canjear un boleto de entrada en el cine; te deja pasar una sola vez y el boleto pierde su validez. |
+| **`.off(evento, callback)`** | **Cancela la suscripción**. Remueve un oyente específico previamente registrado para liberar memoria y dejar de reaccionar. | Te das de baja de un servicio de correos promocionales (Unsubscribe) para que dejen de llegar a tu bandeja. |
+
+:::tip[Buenas Prácticas]
+Para poder usar `.off()` de manera efectiva, recuerda pasarle como parámetro la misma referencia de la función que usaste en `.on()` u `.once()`. Las funciones anónimas o flecha declaradas directamente en la suscripción no se pueden remover individualmente de esta manera.
+:::

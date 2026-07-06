@@ -33,3 +33,4 @@ yarn.lock
 *.woff2
 *.eot
 *.ttf
+*.mdx
