@@ -287,3 +287,39 @@ EventEmitter
       ▼
 CliLogger
 ```
+
+### Algo muy interesante
+
+Supongamos que mañana agregas otro observador.
+
+```typescript
+class Loader
+```
+
+entonces unicamente haces: 
+```typescript
+const runner = new TaskRunner()
+const loader = new Loader()
+
+loader.attach(runner)
+```
+
+y el flujo cambia a:
+
+```txt
+             📻
+
+       emit("success")
+
+             │
+
+     ┌───────┴────────┐
+
+     ▼                ▼
+
+  CLILogger         Loader
+```
+
+**TaskRunner** no cambia una sola línea.
+
+Eso es precisamente el beneficio del patrón Observer: el emisor permanece igual mientras puedes añadir o quitar observadores según lo necesites.
