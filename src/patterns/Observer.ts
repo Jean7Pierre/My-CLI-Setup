@@ -27,7 +27,7 @@ export class TaskRunner extends EventEmitter<TaskEvents> {
         // 2. Emitimos el evento de éxito
         this.emit('success', `Completado: ${taskName} configurado correctamente.`)
         resolve()
-      }, 1500)
+      }, 2000)
     })
   }
 }
@@ -59,6 +59,6 @@ export class CLILogger {
    */
   public detach(subject: TaskRunner) {
     subject.off('start', this.onStart)
-    subject.off('start', this.onSuccess)
+    subject.off('success', this.onSuccess)
   }
 }
