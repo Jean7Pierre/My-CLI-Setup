@@ -1,56 +1,29 @@
 #!/usr/bin/env node
 
-/**
- * Punto de entrada principal de nuestro CLI.
- */
-import { input } from '@inquirer/prompts'
-import { TaskRunner, CLILogger } from './patterns/Observer.js'
-import fs from 'node:fs/promises'
-import path from 'node:path'
-import { FileFactory } from './patterns/SimpleFactory.js'
+import { CommandInvoker } from './patterns/Command.js'
+import { InitCommand } from './commands/InitCommand.js'
 
 async function main() {
-  console.log('=========================================')
-  console.log('🚀 ¡Bienvenido a tu Generador Frontend! 🚀')
-  console.log('=========================================\n')
+  // process.argv trae lo que escribimos en consola.
+  // [0] es la ruta de node, [1] es la ruta del script, [2] es el primer argumento real (nuestro comando).
+  const args = process.argv.slice(2)
 
-  const projectName = await input({
-    message: '¿Cómo se llamará tu nuevo proyecto?',
-    default: 'mi-app-genial'
-  })
+  // Si el usuario no escribe ningún comando, asumimos que quiere usar 'init' por defecto.
+  const commandName = args[0] || 'init'
 
-  console.log(`\nPerfecto, vamos a preparar "${projectName}"...\n`)
+  // Los demás argumentos que vengan después del comando (ej. si el usuario escribe: mi-cli init --force)
+  const commandArgs = args.slice(1)
 
-  // --- PASO PREVIO: Crear la carpeta raíz del proyecto ---
-  // process.cwd() obtiene la ruta de la carpeta donde el usuario abrió la terminal
-  const targetDir = path.join(process.cwd(), projectName)
+  // Instanciamos nuestro Invocador
+  const invoker = new CommandInvoker()
 
-  // Creamos la carpeta (recursive: true evita errores si la carpeta ya existe)
-  await fs.mkdir(targetDir, { recursive: true })
+  // Registramos nuestros comandos (¡Aquí agregaremos más en el futuro!)
+  invoker.register('init', new InitCommand())
 
-  // 2. Implementación del Patrón Observer
-  const runner = new TaskRunner() // Creamos el Sujeto
-  const cliLogger = new CLILogger() // Creamos el Observador
-
-  // Conectamos el observador
-  cliLogger.attach(runner)
-
-  // --- EJECUCIÓN CON LA FÁBRICA ---
-  // 1. Fabricamos los datos de los archivos (en memoria)
-  const prettierFiles = FileFactory.createConfig('prettier')
-  const eslintFiles = FileFactory.createConfig('eslint')
-  const tailwindFiles = FileFactory.createConfig('tailwind')
-
-  // 2. Le decimos al Runner que escriba esos archivos en el disco duro
-  await runner.executeFileCreation('Configuración de Prettier', prettierFiles, targetDir)
-  await runner.executeFileCreation('Configuración de ESLint', eslintFiles, targetDir)
-  await runner.executeFileCreation('Configuración de TailwindCSS', tailwindFiles, targetDir)
-
-  console.log(`\n🎉 ¡Proyecto "${projectName}" creado con éxito en ./${projectName}!`)
-  cliLogger.detach(runner)
+  // Le decimos al invocador que haga su magia
+  await invoker.executeCommand(commandName, commandArgs)
 }
 
-// Como ahora usamos await, la función principal debe ser manejada
 main().catch((error) => {
   console.error('Hubo un error crítico:', error)
   process.exit(1)
