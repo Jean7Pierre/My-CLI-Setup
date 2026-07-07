@@ -5,6 +5,9 @@
  */
 import { input } from '@inquirer/prompts'
 import { TaskRunner, CLILogger } from './patterns/Observer.js'
+import fs from 'node:fs/promises'
+import path from 'node:path'
+import { FileFactory } from './patterns/SimpleFactory.js'
 
 async function main() {
   console.log('=========================================')
@@ -18,6 +21,13 @@ async function main() {
 
   console.log(`\nPerfecto, vamos a preparar "${projectName}"...\n`)
 
+  // --- PASO PREVIO: Crear la carpeta raíz del proyecto ---
+  // process.cwd() obtiene la ruta de la carpeta donde el usuario abrió la terminal
+  const targetDir = path.join(process.cwd(), projectName)
+
+  // Creamos la carpeta (recursive: true evita errores si la carpeta ya existe)
+  await fs.mkdir(targetDir, { recursive: true })
+
   // 2. Implementación del Patrón Observer
   const runner = new TaskRunner() // Creamos el Sujeto
   const cliLogger = new CLILogger() // Creamos el Observador
@@ -25,15 +35,18 @@ async function main() {
   // Conectamos el observador
   cliLogger.attach(runner)
 
-  // 3. Ejecutamos las tareas.
-  // Nota cómo aquí solo llamamos a la lógica, no escribimos console.log().
-  // El Observer se encarga de mostrar los mensajes.
-  await runner.executeTask('Estructura base de React + Vite')
-  await runner.executeTask('Configuración de TypeScript')
-  await runner.executeTask('Archivos de Prettier y ESLint')
-  await runner.executeTask('Configuración de TailwindCSS')
+  // --- EJECUCIÓN CON LA FÁBRICA ---
+  // 1. Fabricamos los datos de los archivos (en memoria)
+  const prettierFiles = FileFactory.createConfig('prettier')
+  const eslintFiles = FileFactory.createConfig('eslint')
+  const tailwindFiles = FileFactory.createConfig('tailwind')
 
-  console.log(`\n🎉 ¡Proyecto "${projectName}" creado con éxito!`)
+  // 2. Le decimos al Runner que escriba esos archivos en el disco duro
+  await runner.executeFileCreation('Configuración de Prettier', prettierFiles, targetDir)
+  await runner.executeFileCreation('Configuración de ESLint', eslintFiles, targetDir)
+  await runner.executeFileCreation('Configuración de TailwindCSS', tailwindFiles, targetDir)
+
+  console.log(`\n🎉 ¡Proyecto "${projectName}" creado con éxito en ./${projectName}!`)
   cliLogger.detach(runner)
 }
 
