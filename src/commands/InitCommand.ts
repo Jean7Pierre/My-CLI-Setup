@@ -42,12 +42,15 @@ export class InitCommand implements Command {
     const eslintFiles = FileFactory.createConfig('eslint')
     const tailwindFiles = FileFactory.createConfig('tailwind')
 
-    // 2. Le decimos al Runner que escriba esos archivos en el disco duro
-    await runner.executeFileCreation('Configuración de Prettier', prettierFiles, targetDir)
-    await runner.executeFileCreation('Configuración de ESLint', eslintFiles, targetDir)
-    await runner.executeFileCreation('Configuración de TailwindCSS', tailwindFiles, targetDir)
+    try {
+      // 2. Le decimos al Runner que escriba esos archivos en el disco duro
+      await runner.executeFileCreation('Configuración de Prettier', prettierFiles, targetDir)
+      await runner.executeFileCreation('Configuración de ESLint', eslintFiles, targetDir)
+      await runner.executeFileCreation('Configuración de TailwindCSS', tailwindFiles, targetDir)
 
-    console.log(`\n🎉 ¡Proyecto "${projectName}" creado con éxito en ./${projectName}!`)
-    cliLogger.detach(runner)
+      console.log(`\n🎉 ¡Proyecto "${projectName}" creado con éxito en ./${projectName}!`)
+    } finally {
+      cliLogger.detach(runner)
+    }
   }
 }
