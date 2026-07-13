@@ -1,12 +1,11 @@
 import { input } from '@inquirer/prompts'
 import fs from 'node:fs/promises'
 import path from 'node:path'
-import type { Command } from '../patterns/Command.js'
 import { TaskRunner, CLILogger } from '../patterns/Observer.js'
 import { FileFactory } from '../patterns/SimpleFactory.js'
 
 /**
- * COMANDO CONCRETO: InitCommand
+ * Concrete Command: InitCommand
  * Implementa la interfaz Command. Contiene toda la receta para inicializar un proyecto.
  */
 export class InitCommand implements Command {
@@ -34,7 +33,7 @@ export class InitCommand implements Command {
     const cliLogger = new CLILogger() // Creamos el Observador
 
     // Conectamos el observador
-    cliLogger.attach(runner)
+    runner.attach(cliLogger)
 
     // --- EJECUCIÓN CON LA FÁBRICA ---
     // 1. Fabricamos los datos de los archivos (en memoria)
