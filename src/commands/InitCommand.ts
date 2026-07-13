@@ -49,7 +49,7 @@ export class InitCommand implements Command {
 
       console.log(`\n🎉 ¡Proyecto "${projectName}" creado con éxito en ./${projectName}!`)
     } finally {
-      cliLogger.detach(runner)
+      runner.detach(cliLogger)
     }
   }
 }
