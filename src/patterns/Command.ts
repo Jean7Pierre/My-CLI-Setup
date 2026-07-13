@@ -1,22 +1,9 @@
 /**
- * INTERFAZ COMMAND (El Contrato).
- * Cualquier comando que queramos agregar a nuestro CLI (init, help, version)
- * DEBE implementar esta interfaz. Garantiza que todos tengan un método execute().
- */
-export interface Command {
-  /**
-   * Método que se ejecuta cuando el usuario llama al comando.
-   * @param args - Argumentos adicionales que el usuario pueda escribir en la terminal.
-   */
-  execute(args: string[]): Promise<void>
-}
-
-/**
  * EL INVOCADOR (El Mesero).
  * Se encarga de registrar los comandos disponibles y decidir cuál ejecutar
  * en base a lo que el usuario escribió en la terminal.
  */
-export class CommandInvoker {
+export class CommandMannager {
   // Un "diccionario" para guardar nuestros comandos.
   // La clave es el nombre del comando (ej. "init") y el valor es la clase que lo maneja.
   private commands: Record<string, Command> = {}

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { CommandInvoker } from './patterns/Command.js'
+import { CommandMannager } from './patterns/Command.js'
 import { InitCommand } from './commands/InitCommand.js'
 
 async function main() {
@@ -14,14 +14,14 @@ async function main() {
   // Los demás argumentos que vengan después del comando (ej. si el usuario escribe: mi-cli init --force)
   const commandArgs = args.slice(1)
 
-  // Instanciamos nuestro Invocador
-  const invoker = new CommandInvoker()
+  // Instanciamos nuestro Invocador,este es el objeto que toma un comando y le pide que se ejecute
+  const manager = new CommandMannager()
 
   // Registramos nuestros comandos (¡Aquí agregaremos más en el futuro!)
-  invoker.register('init', new InitCommand())
+  manager.register('init', new InitCommand())
 
   // Le decimos al invocador que haga su magia
-  await invoker.executeCommand(commandName, commandArgs)
+  await manager.executeCommand(commandName, commandArgs)
 }
 
 main().catch((error) => {
