@@ -21,3 +21,15 @@ interface FileNode {
   fileName: string
   content: string
 }
+
+/**
+ * Estructura de datos: Árbol (Tree)
+ * Representa un nodo en nuestro sistema de archivos.
+ * Puede ser un archivo (hoja) o un directorio (rama).
+ */
+interface FileSystemNode {
+  name: string
+  isDirectory: boolean
+  content?: string // Solo se usa si es un archivo
+  children?: FileSystemNode[] // Solo se usa si es un directorio (¡Aquí anidamos el árbol!)
+}
