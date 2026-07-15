@@ -2,7 +2,15 @@ import { input } from '@inquirer/prompts'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { TaskRunner, CLILogger } from '../patterns/Observer.js'
-import { FileFactory } from '../patterns/SimpleFactory.js'
+import {
+  FileBuilder,
+  FileDirector,
+  GeneratorESlint,
+  GeneratorPrettier,
+  GeneratorTailwind
+} from '../patterns/Factory.js'
+// Agrega la importación en la parte superior:
+import { ProjectTreeFactory } from '../patterns/Tree.js'
 
 /**
  * Concrete Command: InitCommand
@@ -21,7 +29,6 @@ export class InitCommand implements Command {
 
     console.log(`\nPerfecto, vamos a preparar "${projectName}"...\n`)
 
-    // --- PASO PREVIO: Crear la carpeta raíz del proyecto ---
     // process.cwd() obtiene la ruta de la carpeta donde el usuario abrió la terminal
     const targetDir = path.join(process.cwd(), projectName)
 
@@ -37,12 +44,22 @@ export class InitCommand implements Command {
 
     // --- EJECUCIÓN CON LA FÁBRICA ---
     // 1. Fabricamos los datos de los archivos (en memoria)
-    const prettierFiles = FileFactory.createConfig('prettier')
-    const eslintFiles = FileFactory.createConfig('eslint')
-    const tailwindFiles = FileFactory.createConfig('tailwind')
+    const director = new FileDirector()
+    const builder = new FileBuilder()
+    const eslint = new GeneratorESlint()
+    const eslintFiles = eslint.generateConfig(director, builder)
+    const prettier = new GeneratorPrettier()
+    const prettierFiles = prettier.generateConfig(director, builder)
+    const tailwind = new GeneratorTailwind()
+    const tailwindFiles = tailwind.generateConfig(director, builder)
 
     try {
-      // 2. Le decimos al Runner que escriba esos archivos en el disco duro
+      // 1. Obtenemos el árbol de React/Vite desde nuestra Fábrica
+      const reactTree = ProjectTreeFactory.createReactViteTree()
+
+      // 2. Ejecutamos la creación del árbol (carpetas anidadas y archivos base)
+      await runner.executeScaffoldCreation('Estructura base de React + Vite', reactTree, targetDir)
+      // 3. Le decimos al Runner que escriba esos archivos en el disco duro
       await runner.executeFileCreation('Configuración de Prettier', prettierFiles, targetDir)
       await runner.executeFileCreation('Configuración de ESLint', eslintFiles, targetDir)
       await runner.executeFileCreation('Configuración de TailwindCSS', tailwindFiles, targetDir)
