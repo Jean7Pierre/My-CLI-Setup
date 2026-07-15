@@ -63,6 +63,58 @@ export class TaskRunner extends EventEmitter<TaskEvents> {
       throw error
     }
   }
+
+  /**
+   * ALGORITMO RECURSIVO: Recorre el árbol y crea la estructura en el disco.
+   *
+   * @param node - El nodo actual que estamos evaluando (carpeta o archivo)
+   * @param basePath - La ruta donde estamos ubicados actualmente en el disco
+   */
+  private async traverseAndCreate(node: FileSystemNode, basePath: string): Promise<void> {
+    // 1. Calculamos la ruta absoluta de este nodo
+    const currentPath = path.join(basePath, node.name !== 'root' ? node.name : '')
+
+    if (node.isDirectory) {
+      // 2. Si es un directorio, lo creamos físicamente
+      await fs.mkdir(currentPath, { recursive: true })
+
+      // 3. LA MAGIA DE LA RECURSIVIDAD:
+      // Si tiene hijos, nos llamamos a nosotros mismos por cada hijo.
+      if (node.children) {
+        for (const child of node.children) {
+          // Observa cómo pasamos "currentPath" como la nueva base.
+          await this.traverseAndCreate(child, currentPath)
+        }
+      }
+    } else {
+      // 4. Caso base: Es un archivo, así que simplemente lo escribimos.
+      await fs.writeFile(currentPath, node.content || '', 'utf-8')
+    }
+  }
+
+  /**
+   * Método público que inicia la creación del andamiaje (scaffold) y emite los eventos.
+   */
+  public async executeScaffoldCreation(
+    taskName: string,
+    treeRoot: FileSystemNode,
+    targetDirectory: string
+  ): Promise<void> {
+    this.emit('start', `Iniciando: ${taskName}...`)
+
+    try {
+      // Iniciamos la recursividad desde la raíz
+      await this.traverseAndCreate(treeRoot, targetDirectory)
+
+      // Simulamos un retraso para ver nuestra genial animación en consola
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+
+      this.emit('success', `Completado: ${taskName}`)
+    } catch (error) {
+      this.emit('error', `Fallo al ejecutar ${taskName}`)
+      throw error
+    }
+  }
 }
 
 // --- NUEVA CLASE: El Spinner (El Libro Animado) ---
