@@ -34,6 +34,38 @@ class EslintConfigProvider {
   }
 }
 
+class PackageJsonProvider {
+  public static getFiles(projectName: string): FileNode {
+    const pkg = {
+      name: projectName,
+      private: true,
+      version: '0.0.0',
+      type: 'module',
+      scripts: {
+        dev: 'vite',
+        build: 'tsc -b && vite build',
+        preview: 'vite preview'
+      },
+      dependencies: {
+        react: '18.3.1',
+        'react-dom': '18.3.1'
+      },
+      devDependencies: {
+        '@types/react': '18.3.3',
+        '@types/react-dom': '18.3.0',
+        '@vitejs/plugin-react': '4.3.1',
+        typescript: '5.5.3',
+        vite: '5.4.1'
+      }
+    }
+
+    return {
+      fileName: 'package.json',
+      content: JSON.stringify(pkg, null, 2)
+    }
+  }
+}
+
 class FileConfig {
   constructor(
     public fileName: string = '',
@@ -84,6 +116,11 @@ export class FileDirector {
     const { fileName, content } = TailwindConfigProvider.getFiles()
     builder.setName(fileName).setContent(content)
   }
+
+  public makePackageJsonConfig(builder: FileBuilder, projectName: string): void {
+    const { fileName, content } = PackageJsonProvider.getFiles(projectName)
+    builder.setName(fileName).setContent(content)
+  }
 }
 
 /**
@@ -91,7 +128,11 @@ export class FileDirector {
  * Su única responsabilidad es delegar la creación de archivos de configuracion.
  */
 abstract class ConfigGenerator {
-  protected abstract createConfig(director: FileDirector, builder: FileBuilder): FileConfig[]
+  protected abstract createConfig(
+    director: FileDirector,
+    builder: FileBuilder,
+    projectName?: string
+  ): FileConfig[]
 
   /**
    * Método de fabricación.
@@ -100,8 +141,8 @@ abstract class ConfigGenerator {
    * @param builder - Object - Encargado de crear los objetos
    * @returns Un arreglo de FileConfig (porque una configuración podría requerir más de un archivo).
    */
-  public generateConfig(director: FileDirector, builder: FileBuilder): FileConfig[] {
-    const config = this.createConfig(director, builder)
+  public generateConfig(director: FileDirector, builder: FileBuilder, projectName?: string): FileConfig[] {
+    const config = this.createConfig(director, builder, projectName)
     return config
   }
 }
@@ -129,5 +170,13 @@ export class GeneratorPrettier extends ConfigGenerator {
     director.makeIgnorePrettierConfig(builder)
     const configObject2 = builder.build()
     return [configObject1, configObject2]
+  }
+}
+
+export class GeneratorPackageJson extends ConfigGenerator {
+  protected createConfig(director: FileDirector, builder: FileBuilder, projectName?: string): FileConfig[] {
+    director.makePackageJsonConfig(builder, projectName ? projectName : 'Proyecto-uno')
+    const configObject = builder.build()
+    return [configObject]
   }
 }

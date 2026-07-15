@@ -6,6 +6,7 @@ import {
   FileBuilder,
   FileDirector,
   GeneratorESlint,
+  GeneratorPackageJson,
   GeneratorPrettier,
   GeneratorTailwind
 } from '../patterns/Factory.js'
@@ -52,6 +53,8 @@ export class InitCommand implements Command {
     const prettierFiles = prettier.generateConfig(director, builder)
     const tailwind = new GeneratorTailwind()
     const tailwindFiles = tailwind.generateConfig(director, builder)
+    const packageJson = new GeneratorPackageJson()
+    const packageJsonFiles = packageJson.generateConfig(director, builder, projectName)
 
     try {
       // 1. Obtenemos el árbol de React/Vite desde nuestra Fábrica
@@ -63,6 +66,7 @@ export class InitCommand implements Command {
       await runner.executeFileCreation('Configuración de Prettier', prettierFiles, targetDir)
       await runner.executeFileCreation('Configuración de ESLint', eslintFiles, targetDir)
       await runner.executeFileCreation('Configuración de TailwindCSS', tailwindFiles, targetDir)
+      await runner.executeFileCreation('Configuración de packege.json', packageJsonFiles, targetDir)
 
       console.log(`\n🎉 ¡Proyecto "${projectName}" creado con éxito en ./${projectName}!`)
     } finally {
