@@ -58,3 +58,4 @@ Actualmente, `My-CLI-Setup` ofrece las siguientes funcionalidades clave:
 ## Proximos Pasos:
 
 - Permitir que el usuario pueda escoger si quiere crear directorios (Scaffolding).
+- Permitir que el usuario pueda decidir que bibliotecas quiere usar (para llenar el package.json).
