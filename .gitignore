@@ -45,3 +45,6 @@ tsbuildinfo/
 *.sw?
 .DS_Store
 Thumbs.db
+
+#local files
+details.md
