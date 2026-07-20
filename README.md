@@ -2,6 +2,24 @@
 
 My-CLI-Setup es una herramienta de línea de comandos (CLI) diseñada para automatizar y simplificar la creación de entornos de desarrollo para proyectos frontend. Su objetivo principal es generar rápidamente un workspace preconfigurado con tecnologías modernas como React, TypeScript, ESLint y Prettier, abarcando desde la creación de archivos de configuración esenciales hasta la preparación para la instalación de las dependencias necesarias.
 
+## Automatización para Desarrolladores
+
+Para visualizar las diferencias entre el ultimo y penultimo commit, se puede usar el alias: **git md-diff**.
+
+### ¿Cómo funciona ?
+
+Gracias a la sintaxis **${1:-HEAD~1}** y **${2:-HEAD}**, el alias ahora tiene valores por defecto inteligentes y acepta modificadores.
+
+Puedes usarlo de tres maneras distintas:
+
+- Por defecto: Si ejecutas solo git md-diff, compara el penúltimo contra el último commit (HEAD~1 y HEAD).
+- Comparar otros commits específicos: Puedes pasarle hashes, ramas o posiciones relativas. Por ejemplo, git md-diff HEAD~5 HEAD comparará los cambios de los últimos 5 commits.
+- Comparar una rama entera: Puedes usar git md-diff main feature-rama para ver las diferencias exactas entre dos ramas antes de integrarlas.
+
+### Ver lista de alias
+
+- git config --local --get-regexp '^alias\.'
+
 ## Para Reclutadores Técnicos y Arquitectos de Software
 
 Este proyecto ha sido diseñado siguiendo principios de Clean Architecture y aplicando patrones de diseño fundamentales para asegurar su escalabilidad, mantenibilidad y robustez.
@@ -38,6 +56,7 @@ Actualmente, `My-CLI-Setup` ofrece las siguientes funcionalidades clave:
 - **Inicialización de Proyectos (`init` command)**:
   - Pregunta interactivamente por el nombre del nuevo proyecto.
   - Crea una nueva carpeta con el nombre del proyecto en el directorio actual.
+  - Permite seleccionar interactivamente las dependencias de producción clave (como React, React Router, TailwindCSS, React Error Boundary) que se incluirán en el `package.json`.
   - Genera archivos de configuración esenciales para:
     - **Prettier**: Formateador de código para mantener un estilo consistente.
     - **ESLint**: Linter para identificar y reportar patrones problemáticos en el código.
