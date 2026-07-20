@@ -8,7 +8,7 @@ import {
   GeneratorESlint,
   GeneratorPackageJson,
   GeneratorPrettier,
-  GeneratorTailwind
+  GeneratorViteConfig
 } from '../patterns/Factory.js'
 // Agrega la importación en la parte superior:
 import { ProjectTreeFactory } from '../patterns/Tree.js'
@@ -18,7 +18,7 @@ import { ProjectTreeFactory } from '../patterns/Tree.js'
  * Implementa la interfaz Command. Contiene toda la receta para inicializar un proyecto.
  */
 export class InitCommand implements Command {
-  public async execute(args: string[]): Promise<void> {
+  public async execute(): Promise<void> {
     console.log('=========================================')
     console.log('🚀 ¡Bienvenido a tu Generador Frontend! 🚀')
     console.log('=========================================\n')
@@ -51,13 +51,13 @@ export class InitCommand implements Command {
     const eslintFiles = eslint.generateConfig(director, builder)
     const prettier = new GeneratorPrettier()
     const prettierFiles = prettier.generateConfig(director, builder)
-    const tailwind = new GeneratorTailwind()
-    const tailwindFiles = tailwind.generateConfig(director, builder)
     const packageJson = new GeneratorPackageJson()
     const packageJsonFiles = packageJson.generateConfig(director, builder, projectName)
+    const vite = new GeneratorViteConfig()
+    const viteConfig = vite.generateConfig(director, builder)
 
     try {
-      // 1. Obtenemos el árbol de React/Vite desde nuestra Fábrica
+      // 1. Obtenemos el árbol (Scaffolding) desde nuestra Fábrica
       const reactTree = ProjectTreeFactory.createReactViteTree()
 
       // 2. Ejecutamos la creación del árbol (carpetas anidadas y archivos base)
@@ -65,7 +65,7 @@ export class InitCommand implements Command {
       // 3. Le decimos al Runner que escriba esos archivos en el disco duro
       await runner.executeFileCreation('Configuración de Prettier', prettierFiles, targetDir)
       await runner.executeFileCreation('Configuración de ESLint', eslintFiles, targetDir)
-      await runner.executeFileCreation('Configuración de TailwindCSS', tailwindFiles, targetDir)
+      await runner.executeFileCreation('Configuración de TailwindCSS', viteConfig, targetDir)
       await runner.executeFileCreation('Configuración de packege.json', packageJsonFiles, targetDir)
 
       console.log(`\n🎉 ¡Proyecto "${projectName}" creado con éxito en ./${projectName}!`)
