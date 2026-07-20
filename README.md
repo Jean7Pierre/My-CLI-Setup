@@ -54,3 +54,7 @@ Actualmente, `My-CLI-Setup` ofrece las siguientes funcionalidades clave:
 ### Inicio del proyecto
 
 ![primera-imagen-del-proyecto](./public/images/init.png)
+
+## Proximos Pasos:
+
+- Permitir que el usuario pueda escoger si quiere crear directorios (Scaffolding).
