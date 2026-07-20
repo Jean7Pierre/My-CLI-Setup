@@ -1,4 +1,4 @@
-import { input } from '@inquirer/prompts'
+import { input, checkbox } from '@inquirer/prompts'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { TaskRunner, CLILogger } from '../patterns/Observer.js'
@@ -28,6 +28,16 @@ export class InitCommand implements Command {
       default: 'mi-app-genial'
     })
 
+    const selectedDependencies = await checkbox({
+      message: 'Selecciona las dependencias de producción que deseas incluir:',
+      choices: [
+        { name: 'React (incluye react y react-dom)', value: 'react', checked: true },
+        { name: 'React Router', value: 'react-router-dom' },
+        { name: 'TailwindCSS (incluye @tailwindcss/vite)', value: 'tailwindcss' },
+        { name: 'React Error Boundary', value: 'react-error-boundary' }
+      ]
+    })
+
     console.log(`\nPerfecto, vamos a preparar "${projectName}"...\n`)
 
     // process.cwd() obtiene la ruta de la carpeta donde el usuario abrió la terminal
@@ -48,13 +58,13 @@ export class InitCommand implements Command {
     const director = new FileDirector()
     const builder = new FileBuilder()
     const eslint = new GeneratorESlint()
-    const eslintFiles = eslint.generateConfig(director, builder)
+    const eslintFiles = eslint.generateConfig({ director, builder })
     const prettier = new GeneratorPrettier()
-    const prettierFiles = prettier.generateConfig(director, builder)
+    const prettierFiles = prettier.generateConfig({ director, builder })
     const packageJson = new GeneratorPackageJson()
-    const packageJsonFiles = packageJson.generateConfig(director, builder, projectName)
+    const packageJsonFiles = packageJson.generateConfig({ director, builder, projectName, selectedDependencies })
     const vite = new GeneratorViteConfig()
-    const viteConfig = vite.generateConfig(director, builder)
+    const viteConfig = vite.generateConfig({ director, builder })
 
     try {
       // 1. Obtenemos el árbol (Scaffolding) desde nuestra Fábrica
