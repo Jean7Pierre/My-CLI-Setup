@@ -1,9 +1,10 @@
+import { eslintConfig, prettierignore, prettierrc, viteConfig } from '../constanst/constants.js'
 //implementar el patron Strategy para la creacion del contenido del archivo de configuracion
 class PrettierConfigProvider {
   public static getFiles(): FileNode {
     return {
       fileName: '.prettierrc',
-      content: JSON.stringify({ semi: true, singleQuote: true, trailingComma: 'es5' }, null, 2)
+      content: prettierrc
     }
   }
 }
@@ -12,15 +13,7 @@ class IgnoredPrettierConfigProvider {
   public static getFiles(): FileNode {
     return {
       fileName: '.prettierignore',
-      content: `node_modules\ndist\nbuild`
-    }
-  }
-}
-class TailwindConfigProvider {
-  public static getFiles(): FileNode {
-    return {
-      fileName: 'tailwind.config.js',
-      content: `/** @type {import('tailwindcss').Config} */\nmodule.exports = {...}`
+      content: prettierignore
     }
   }
 }
@@ -29,7 +22,16 @@ class EslintConfigProvider {
   public static getFiles(): FileNode {
     return {
       fileName: 'eslint.config.mjs',
-      content: `import js from "@eslint/js";\n\nexport default [\n  js.configs.recommended,\n  { rules: { "no-unused-vars": "warn" } }\n];`
+      content: eslintConfig
+    }
+  }
+}
+
+class ViteConfigProvider {
+  public static getFiles(): FileNode {
+    return {
+      fileName: 'vite.config.ts',
+      content: viteConfig
     }
   }
 }
@@ -44,18 +46,32 @@ class PackageJsonProvider {
       scripts: {
         dev: 'vite',
         build: 'tsc -b && vite build',
+        lint: 'eslint .',
         preview: 'vite preview'
       },
       dependencies: {
-        react: '18.3.1',
-        'react-dom': '18.3.1'
+        '@tailwindcss/vite': '4.3.1',
+        react: '19.2.7',
+        'react-dom': '19.2.7',
+        'react-error-boundary': '6.1.2',
+        'react-router-dom': '7.15.1',
+        tailwindcss: '4.3.1'
       },
+
       devDependencies: {
-        '@types/react': '18.3.3',
-        '@types/react-dom': '18.3.0',
         '@vitejs/plugin-react': '4.3.1',
-        typescript: '5.5.3',
-        vite: '5.4.1'
+        '@eslint/js': '10.0.1',
+        '@types/node': '24.13.2',
+        '@types/react': '19.2.17',
+        '@types/react-dom': '19.2.3',
+        eslint: '10.5.0',
+        'eslint-config-prettier': '10.1.8',
+        'eslint-plugin-react-hooks': '7.1.1',
+        'eslint-plugin-react-refresh': '0.5.3',
+        globals: '17.6.0',
+        typescript: '6.0.2',
+        'typescript-eslint': '8.61.0',
+        vite: '8.1.0'
       }
     }
 
@@ -112,13 +128,13 @@ export class FileDirector {
     builder.setName(fileName).setContent(content)
   }
 
-  public makeTailwindConfig(builder: FileBuilder): void {
-    const { fileName, content } = TailwindConfigProvider.getFiles()
+  public makePackageJsonConfig(builder: FileBuilder, projectName: string): void {
+    const { fileName, content } = PackageJsonProvider.getFiles(projectName)
     builder.setName(fileName).setContent(content)
   }
 
-  public makePackageJsonConfig(builder: FileBuilder, projectName: string): void {
-    const { fileName, content } = PackageJsonProvider.getFiles(projectName)
+  public makeViteConfig(builder: FileBuilder): void {
+    const { fileName, content } = ViteConfigProvider.getFiles()
     builder.setName(fileName).setContent(content)
   }
 }
@@ -155,14 +171,6 @@ export class GeneratorESlint extends ConfigGenerator {
   }
 }
 
-export class GeneratorTailwind extends ConfigGenerator {
-  protected createConfig(director: FileDirector, builder: FileBuilder): FileConfig[] {
-    director.makeTailwindConfig(builder)
-    const configObject = builder.build()
-    return [configObject]
-  }
-}
-
 export class GeneratorPrettier extends ConfigGenerator {
   protected createConfig(director: FileDirector, builder: FileBuilder): FileConfig[] {
     director.makePrettierConfig(builder)
@@ -176,6 +184,14 @@ export class GeneratorPrettier extends ConfigGenerator {
 export class GeneratorPackageJson extends ConfigGenerator {
   protected createConfig(director: FileDirector, builder: FileBuilder, projectName?: string): FileConfig[] {
     director.makePackageJsonConfig(builder, projectName ? projectName : 'Proyecto-uno')
+    const configObject = builder.build()
+    return [configObject]
+  }
+}
+
+export class GeneratorViteConfig extends ConfigGenerator {
+  protected createConfig(director: FileDirector, builder: FileBuilder): FileConfig[] {
+    director.makeViteConfig(builder)
     const configObject = builder.build()
     return [configObject]
   }

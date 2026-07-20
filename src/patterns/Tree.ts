@@ -43,6 +43,11 @@ export class ProjectTreeFactory {
                 'import { Button } from "./components/Button";\n\nexport default function App() {\n  return <div>Hola React <Button /></div>;\n}'
             },
             {
+              name: 'index.css',
+              isDirectory: false,
+              content: '@import "tailwindcss";'
+            },
+            {
               name: 'main.tsx',
               isDirectory: false,
               content:
@@ -54,7 +59,7 @@ export class ProjectTreeFactory {
           name: 'index.html',
           isDirectory: false,
           content:
-            '<!DOCTYPE html>\n<html lang="es">\n<body>\n  <div id="root"></div>\n  <script type="module" src="/src/main.tsx"></script>\n</body>\n</html>'
+            '<!doctype html> \n<html lang="es"> \n<head> \n  <meta charset="utf-8" /> \n <meta name="viewport" content="width=device-width, initial-scale=1.0" /> \n  <link href="/src/style.css" rel="stylesheet"> \n  <title>Nuevo Proyecto</title> \n</head> \n<body> \n  <div id="root"></div> \n  <script type="module" src="/src/main.tsx"></script> \n</body> \n</html>'
         }
       ]
     }
