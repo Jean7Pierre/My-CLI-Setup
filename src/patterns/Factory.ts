@@ -38,7 +38,15 @@ class ViteConfigProvider {
 
 class PackageJsonProvider {
   public static getFiles(projectName: string, selectedDependencies?: string[]): FileNode {
-    const allDependencies: Record<string, string> = {
+    type AllowedDependencies =
+      | 'react'
+      | 'react-dom'
+      | '@tailwindcss/vite'
+      | 'tailwindcss'
+      | 'react-router-dom'
+      | 'react-error-boundary'
+
+    const allDependencies: Record<AllowedDependencies, string> = {
       '@tailwindcss/vite': '4.3.1',
       react: '19.2.7',
       'react-dom': '19.2.7',
@@ -47,22 +55,24 @@ class PackageJsonProvider {
       tailwindcss: '4.3.1'
     }
 
-    const filteredDependencies: Record<string, string> = {}
+    const filteredDependencies: Partial<Record<AllowedDependencies, string>> = {}
 
     if (selectedDependencies) {
-      if (selectedDependencies.includes('react')) {
-        filteredDependencies['react'] = allDependencies['react']
-        filteredDependencies['react-dom'] = allDependencies['react-dom']
+      const dependencyMap: Record<string, AllowedDependencies[]> = {
+        react: ['react', 'react-dom'],
+        tailwindcss: ['tailwindcss', '@tailwindcss/vite'],
+        'react-router-dom': ['react-router-dom'],
+        'react-error-boundary': ['react-error-boundary']
       }
-      if (selectedDependencies.includes('tailwindcss')) {
-        filteredDependencies['@tailwindcss/vite'] = allDependencies['@tailwindcss/vite']
-        filteredDependencies['tailwindcss'] = allDependencies['tailwindcss']
-      }
-      if (selectedDependencies.includes('react-router-dom')) {
-        filteredDependencies['react-router-dom'] = allDependencies['react-router-dom']
-      }
-      if (selectedDependencies.includes('react-error-boundary')) {
-        filteredDependencies['react-error-boundary'] = allDependencies['react-error-boundary']
+
+      for (const selected of selectedDependencies) {
+        const depsToInclude = dependencyMap[selected]
+
+        if (depsToInclude) {
+          for (const dep of depsToInclude) {
+            filteredDependencies[dep] = allDependencies[dep]
+          }
+        }
       }
     }
 
@@ -156,7 +166,11 @@ export class FileDirector {
     builder.setName(fileName).setContent(content)
   }
 
-  public makePackageJsonConfig(builder: FileBuilder, projectName: string, selectedDependencies?: string[]): void {
+  public makePackageJsonConfig(
+    builder: FileBuilder,
+    projectName: string,
+    selectedDependencies?: string[]
+  ): void {
     const { fileName, content } = PackageJsonProvider.getFiles(projectName, selectedDependencies)
     builder.setName(fileName).setContent(content)
   }
@@ -205,7 +219,12 @@ export class GeneratorPrettier extends ConfigGenerator {
 }
 
 export class GeneratorPackageJson extends ConfigGenerator {
-  protected createConfig({ director, builder, projectName, selectedDependencies }: ConfigOptions): FileConfig[] {
+  protected createConfig({
+    director,
+    builder,
+    projectName,
+    selectedDependencies
+  }: ConfigOptions): FileConfig[] {
     director.makePackageJsonConfig(builder, projectName ? projectName : 'Proyecto-uno', selectedDependencies)
     const configObject = builder.build()
     return [configObject]
