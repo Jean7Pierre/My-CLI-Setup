@@ -32,9 +32,9 @@ export class InitCommand implements Command {
       message: 'Selecciona las dependencias de producción que deseas incluir:',
       choices: [
         { name: 'React (incluye react y react-dom)', value: 'react', checked: true },
-        { name: 'React Router', value: 'react-router-dom' },
-        { name: 'TailwindCSS (incluye @tailwindcss/vite)', value: 'tailwindcss' },
-        { name: 'React Error Boundary', value: 'react-error-boundary' }
+        { name: 'React Router', value: 'react-router-dom', checked: true },
+        { name: 'TailwindCSS (incluye @tailwindcss/vite)', value: 'tailwindcss', checked: true },
+        { name: 'React Error Boundary', value: 'react-error-boundary', checked: true }
       ]
     })
 
