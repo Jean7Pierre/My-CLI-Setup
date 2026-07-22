@@ -25,6 +25,8 @@
   "type": "module",
   "devDependencies": {
     "@eslint/js": "10.0.1",
+    "@types/figlet": "^1.5.8",
+    "@types/gradient-string": "^1.1.6",
     "@types/node": "26.1.0",
     "eslint": "10.6.0",
     "eslint-config-prettier": "10.1.8",
@@ -34,6 +36,10 @@
     "typescript-eslint": "8.62.1"
   },
   "dependencies": {
-    "@inquirer/prompts": "8.5.2"
+    "@inquirer/prompts": "8.5.2",
+    "boxen": "^8.0.1",
+    "figlet": "^1.7.0",
+    "gradient-string": "^2.0.2",
+    "picocolors": "^1.0.1"
   }
 }

@@ -12,16 +12,42 @@ import {
 } from '../patterns/Factory.js'
 // Agrega la importación en la parte superior:
 import { ProjectTreeFactory } from '../patterns/Tree.js'
+import figlet from 'figlet'
+import boxen from 'boxen'
+import gradient from 'gradient-string'
+import pc from 'picocolors'
 
 /**
  * Concrete Command: InitCommand
  * Implementa la interfaz Command. Contiene toda la receta para inicializar un proyecto.
  */
 export class InitCommand implements Command {
+  private async typeWriter(text: string, delay = 5): Promise<void> {
+    const tokens = text.match(/\x1B\[\d*(?:;\d+)*[a-zA-Z]|./gs) || []
+    for (const token of tokens) {
+      process.stdout.write(token)
+      if (!token.startsWith('\x1B')) {
+        await new Promise((resolve) => setTimeout(resolve, delay))
+      }
+    }
+    process.stdout.write('\n')
+  }
+
   public async execute(): Promise<void> {
-    console.log('=========================================')
-    console.log('🚀 ¡Bienvenido a tu Generador Frontend! 🚀')
-    console.log('=========================================\n')
+    const asciiText = figlet.textSync('MY-CLI-SETUP', { font: 'Standard' })
+    const gradientText = gradient.pastel.multiline(asciiText)
+    const description = pc.bold(pc.cyan('Set up your workspace instantly.'))
+    const fullMessage = `${gradientText}\n\n${description}`
+
+    const boxedMessage = boxen(fullMessage, {
+      padding: 1,
+      margin: 1,
+      borderStyle: 'round',
+      borderColor: 'cyan',
+      textAlignment: 'center'
+    })
+
+    await this.typeWriter(boxedMessage, 2)
 
     const projectName = await input({
       message: '¿Cómo se llamará tu nuevo proyecto?',
