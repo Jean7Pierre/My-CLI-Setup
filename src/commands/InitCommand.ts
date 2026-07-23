@@ -111,13 +111,13 @@ export class InitCommand implements Command {
       } finally {
         runner.detach(cliLogger)
       }
-    } catch (error: any) {
-      if (error.name === 'ExitPromptError') {
+    } catch (error: unknown) {
+      if (error instanceof Error && error.name === 'ExitPromptError') {
         console.log(pc.yellow('\n\nOperación cancelada por el usuario. ¡Hasta pronto!\n'))
         process.exit(0)
-      } else {
-        throw error
       }
+
+      throw error
     }
   }
 }
