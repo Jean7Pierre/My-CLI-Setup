@@ -80,7 +80,7 @@ export default tseslint.config(
         ...globals.es2020
       },
       parserOptions: {
-        projectService: true,
+        project: ['tsconfig.app.json', 'tsconfig.node.json'],
         tsconfigRootDir: import.meta.dirname,
         ecmaFeatures: {
           jsx: true // Habilitar la comprensión de código JSX
@@ -113,7 +113,6 @@ export default tseslint.config(
   // 5. Prettier siempre al final para apagar reglas de formato que choquen
   eslintConfigPrettier
 )
-
 `
 
 export const viteConfig = `
