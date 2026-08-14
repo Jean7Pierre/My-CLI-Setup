@@ -45,7 +45,8 @@ export class ProjectTreeFactory {
             {
               name: 'index.css',
               isDirectory: false,
-              content: '@import "tailwindcss";'
+              content:
+                '@import "tailwindcss"; /* ── Reset & Base ── */*, *::before, *::after {box-sizing: border-box;}html, body, #root {margin: 0;padding: 0;height: 100%;}'
             },
             {
               name: 'main.tsx',
